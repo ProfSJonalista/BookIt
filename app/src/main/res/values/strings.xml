@@ -12,4 +12,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="searchBoxHint">Enter book name, author or category</string>
+    <string name="searchButtonName">Search</string>
+
+    <string-array name="category_array">
+        <item>Author name</item>
+        <item>Book name</item>
+        <item>Category</item>
+    </string-array>
 </resources>
