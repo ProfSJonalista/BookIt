@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5557FF</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#015566</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#d81b60</color>
     <color name="BgColor">#00687d</color>
+    <color name="ChooseColor">#73aab5</color>
+    <color name="searchButtonText">#282700</color>
 
 </resources>

@@ -15,6 +15,8 @@
     <string name="searchBoxHint">Enter book name, author or category</string>
     <string name="searchButtonName">Search</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="search_criteria">Select search criteria:</string>
+    <string name="title">BookIt</string>
 
     <string-array name="category_array">
         <item>Author name</item>
