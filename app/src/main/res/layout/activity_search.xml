@@ -89,7 +89,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
         android:background="@drawable/search_button_rounded"
-        android:elevation="5dp"
+        android:elevation="6dp"
         android:stateListAnimator="@null"
         android:text="@string/searchButtonName"
         android:textColor="@color/colorPrimaryDark"

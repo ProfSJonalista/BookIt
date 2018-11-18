@@ -40,4 +40,5 @@
     <string name="give_back_to">Give back to the day: 20/1/2019</string>
     <string name="book_reservation">Book reservation</string>
     <string name="description">Description</string>
+    <string name="not_available">Not available</string>
 </resources>
