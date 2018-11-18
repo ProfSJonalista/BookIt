@@ -38,6 +38,15 @@
             android:name=".ForgotPasswordActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" >
 
+
+
+        </activity>
+
+        <activity
+            android:name=".UserBooksActivity"
+            android:label="UserBooksActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
