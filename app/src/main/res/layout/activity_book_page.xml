@@ -27,7 +27,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="11dp"
-                android:foregroundGravity="right"
                 android:padding="10dp"
                 android:src="@drawable/search_icon" />
 
@@ -36,6 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:gravity="start"
                 android:text="@string/title"
                 android:textColor="@android:color/background_light"
                 android:textSize="22sp"
@@ -182,7 +182,8 @@
                     android:text="@string/book_reservation"
                     android:textStyle="bold"
                     android:translationZ="4dp"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    />
 
                 <TextView
                     android:id="@+id/description"
