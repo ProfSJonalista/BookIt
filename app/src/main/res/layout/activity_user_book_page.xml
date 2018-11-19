@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/BgColor"
     android:orientation="vertical"
-    tools:context=".BookPageActivity">
+    tools:context=".UserBookPageActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -155,33 +155,17 @@
                     android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/notAvailable"
+                    android:id="@+id/dateOfReceipt"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="30dp"
-                    android:background="@drawable/not_available_bg"
+                    android:background="@drawable/date_of_receipt_bg"
                     android:gravity="center"
-                    android:text="@string/not_available"
+                    android:text="@string/date_of_receipt"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/bookReservationButton"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="30dp"
-                    android:background="@drawable/reservation_button"
-                    android:elevation="6dp"
-                    android:gravity="center"
-                    android:stateListAnimator="@null"
-                    android:text="@string/book_reservation"
-                    android:textStyle="bold"
-                    android:translationZ="4dp"
                     android:visibility="visible" />
 
                 <TextView
