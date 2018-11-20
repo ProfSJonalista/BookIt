@@ -12,8 +12,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="searchBoxHint">Enter book name, author or category</string>
-    <string name="searchButtonName">Search</string>
+    <string name="search_box_hint">Enter book name, author or category</string>
+    <string name="search_button_name">Search</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="search_criteria">Select search criteria:</string>
     <string name="title">BookIt</string>
@@ -26,4 +26,20 @@
     <string name="title_activity_search_result">SearchResultActivity</string>
     <string name="action_settings">Settings</string>
     <string name="results">Results</string>
+    <string name="enter_email">Enter email:</string>
+    <string name="email_hint">Email</string>
+    <string name="enter_new_password">Enter new password:</string>
+    <string name="new_password_hint">Password</string>
+    <string name="confirm_new_password">Confirm new password:</string>
+    <string name="book_title">Title</string>
+    <string name="book_author">Author</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="genre">Genre</string>
+    <string name="publish_date">Publish date</string>
+    <string name="describe_book_example">In the romantic tradition of The Notebook and Nights in Rodanthe, #1 New York Times bestselling author Nicholas Sparks returns with a story about a chance encounter that becomes a touchstone for two vastly different individuals -- transcending decades, continents, and the bittersweet workings of fate. Hope Anderson is at a crossroads. At thirty-six, she\'s been dating her boyfriend, an orthopedic surgeon, for six years. With no wedding plans in sight, and her father recently diagnosed with ALS, she decides to use a week at her family\'s cottage in Sunset Beach, North Carolina, to ready the house for sale and mull over some difficult decisions about her future. Tru Walls has never visited North Carolina but is summoned to Sunset Beach by a letter from a man claiming to be his father. A safari guide, born and raised in Zimbabwe, Tru hopes to unravel some of the mysteries surrounding his mother\'s early life and recapture memories lost with her death. When the two strangers cross paths, their connection is as electric as it is unfathomable . . . but in the immersive days that follow, their feelings for each other will give way to choices that pit family duty against personal happiness in devastating ways.  Illuminating life\'s heartbreaking regrets and enduring hope, EVERY BREATH explores the many facets of love that lay claim to our deepest loyalties -- and asks the question, How long can a dream survive?</string>
+    <string name="give_back_to">Give back to the day: 20/1/2019</string>
+    <string name="book_reservation">Book reservation</string>
+    <string name="description">Description</string>
+    <string name="not_available">Not available</string>
+    <string name="date_of_receipt">Receive to: 21/02/2019</string>
 </resources>
