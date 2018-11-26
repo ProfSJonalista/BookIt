@@ -16,8 +16,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
+
+import java.util.List;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -39,17 +45,16 @@ public class StartActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener(){
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth){
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null) {
+                if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in" + user.getUid());
                     toastMessage("Succesfully signed in with: " + user.getEmail());
 
                     startActivity(new Intent(StartActivity.this, SearchActivity.class));
-                }
-                else {
+                } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out");
                 }
@@ -75,10 +80,28 @@ public class StartActivity extends AppCompatActivity {
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //opens new Activity
-                String email = mEmailView.getText().toString();
-                String pass = mPasswordView.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, pass);
+
+                final String email = mEmailView.getText().toString();
+                final String pass = mPasswordView.getText().toString();
+
+                mAuth.fetchSignInMethodsForEmail(email)
+                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                if (task.isSuccessful()) {
+                                    SignInMethodQueryResult result = task.getResult();
+                                    List<String> signInMethods = result.getSignInMethods();
+                                    if (signInMethods != null && signInMethods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
+                                        mAuth.signInWithEmailAndPassword(email, pass);
+                                    } else {
+                                        mAuth.createUserWithEmailAndPassword(email, pass);
+                                    }
+                                } else {
+                                    mAuth.createUserWithEmailAndPassword(email, pass);
+                                    Log.e(TAG, "Error getting sign in methods for user", task.getException());
+                                }
+                            }
+                        });
             }
         });
 
@@ -87,19 +110,19 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
-        if(mAuthListener != null)
+        if (mAuthListener != null)
             mAuth.removeAuthStateListener(mAuthListener);
     }
 
-    private void toastMessage(String message){
+    private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
