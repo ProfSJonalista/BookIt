@@ -58,7 +58,7 @@
     </android.support.v7.widget.Toolbar>
 
     <ListView
-        android:id="@+id/ListView"
+        android:id="@+id/searchResultListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:divider="@color/material_blue_grey_800"

@@ -28,20 +28,20 @@
         <activity
             android:name=".SearchResultActivity"
             android:label="@string/title_activity_search_result"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity
-            android:name=".ListView" />
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ListView" />
         <activity
             android:name=".ForgotPasswordActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".UserBooksActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BookPageActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserBookPageActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
+
 </manifest>

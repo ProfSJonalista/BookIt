@@ -24,8 +24,8 @@ public class UserBooksActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         simpleList = (ListView)findViewById(R.id.ListView);
-        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), Title, Author, Status, flags);
-        simpleList.setAdapter(customAdapter);
+//        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), Title, Author, Status, flags);
+//        simpleList.setAdapter(customAdapter);
         }
     }
 

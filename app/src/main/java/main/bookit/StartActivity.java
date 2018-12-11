@@ -22,8 +22,16 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.SecureRandom;
 import java.util.List;
+
+import main.bookit.helpers.Children;
+import main.bookit.model.Book;
+import main.bookit.model.Category;
+import main.bookit.helpers.RandomString;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -54,6 +62,7 @@ public class StartActivity extends AppCompatActivity {
                     toastMessage("Succesfully signed in with: " + user.getEmail());
 
                     startActivity(new Intent(StartActivity.this, SearchActivity.class));
+                    finish();
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                     toastMessage("Successfully signed out");
@@ -61,18 +70,15 @@ public class StartActivity extends AppCompatActivity {
             }
         };
 
-        // Set up the login form.
+
+
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-
-                    return true;
-                }
-                return false;
+                return id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL;
             }
         });
 
