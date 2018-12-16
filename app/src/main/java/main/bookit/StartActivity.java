@@ -37,63 +37,63 @@ public class StartActivity extends AppCompatActivity {
 
     private static final String TAG = "StartActivity";
 
-    private FirebaseAuth mAuth;
-
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseAuth mAuth;                             //Firebase authentication manager
+    private EditText mPasswordView;                         //password text box
+    private AutoCompleteTextView mEmailView;                //email text box
+    private FirebaseAuth.AuthStateListener mAuthListener;   //Firebase authentication listener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_start);
 
+        //Firebase Authentication initializer
         mAuth = FirebaseAuth.getInstance();
 
+        //listener to check if current user is logged in
+        //and to move to next Activity when login state changes
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //downloads user
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    //if user isn't null, his ID is written in logs
                     Log.d(TAG, "onAuthStateChanged:signed_in" + user.getUid());
+                    //a toast message to view email user used to access
                     toastMessage("Succesfully signed in with: " + user.getEmail());
-
+                    //starts new activity
                     startActivity(new Intent(StartActivity.this, SearchActivity.class));
+                    //finishes current activity, when new one is opened
                     finish();
                 } else {
+                    //when user signs out, it is written in logs
                     Log.d(TAG, "onAuthStateChanged:signed_out");
+                    //a toast message to inform user he signed out
                     toastMessage("Successfully signed out");
                 }
             }
         };
 
-
-
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-
         mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                return id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL;
-            }
-        });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        //listens for the button to be clicked
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //gets user email
                 final String email = mEmailView.getText().toString();
+                //gets user password
                 final String pass = mPasswordView.getText().toString();
 
+                //fetches sign in methods for email user has given
                 mAuth.fetchSignInMethodsForEmail(email)
                         .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                             @Override
                             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                //if task is successful AND user has sign in methods, logs in user to the application
                                 if (task.isSuccessful()) {
                                     SignInMethodQueryResult result = task.getResult();
                                     List<String> signInMethods = result.getSignInMethods();
@@ -102,6 +102,7 @@ public class StartActivity extends AppCompatActivity {
                                     } else {
                                         mAuth.createUserWithEmailAndPassword(email, pass);
                                     }
+                                    //if not, registers user
                                 } else {
                                     mAuth.createUserWithEmailAndPassword(email, pass);
                                     Log.e(TAG, "Error getting sign in methods for user", task.getException());
@@ -110,9 +111,6 @@ public class StartActivity extends AppCompatActivity {
                         });
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     @Override
