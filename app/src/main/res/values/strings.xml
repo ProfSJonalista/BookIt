@@ -34,6 +34,10 @@
     <string name="not_available">Not available</string>
     <string name="date_of_receipt">Receive to: 21/02/2019</string>
     <string name="save">Save</string>
+    <string name="language_choose">Choose language:</string>
+    <string name="change_password">Change password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
 
     <!-- SpinnerArrays -->
 
@@ -47,4 +51,5 @@
         <item>English</item>
         <item>Polski</item>
     </string-array>
+    <string name="language_change">Change language:</string>
 </resources>

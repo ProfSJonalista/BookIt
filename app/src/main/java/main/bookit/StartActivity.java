@@ -1,5 +1,6 @@
 package main.bookit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.security.SecureRandom;
 import java.util.List;
 
+import io.paperdb.Paper;
 import main.bookit.helpers.Children;
+import main.bookit.helpers.LocaleHelper;
 import main.bookit.model.Book;
 import main.bookit.model.Category;
 import main.bookit.helpers.RandomString;
@@ -43,9 +46,20 @@ public class StartActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;   //Firebase authentication listener
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase, "en"));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        Paper.init(this);
+
+        String language = Paper.book().read("language");
+        if(language == null){
+            Paper.book().write("language", "en");
+        }
 
         //Firebase Authentication initializer
         mAuth = FirebaseAuth.getInstance();
@@ -63,7 +77,8 @@ public class StartActivity extends AppCompatActivity {
                     //a toast message to view email user used to access
                     toastMessage("Succesfully signed in with: " + user.getEmail());
                     //starts new activity
-                    startActivity(new Intent(StartActivity.this, SearchActivity.class));
+                    //startActivity(new Intent(StartActivity.this, SearchActivity.class));
+                    startActivity(new Intent(StartActivity.this, SettingsActivity.class));
                     //finishes current activity, when new one is opened
                     finish();
                 } else {
