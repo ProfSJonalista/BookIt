@@ -54,10 +54,12 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        Paper.init(this);
 
+        //a tool to remember what language user is using
+        Paper.init(this);
         String language = Paper.book().read("language");
         if(language == null){
+            //if nothing is written, english is set as default language
             Paper.book().write("language", "en");
         }
 
@@ -77,8 +79,7 @@ public class StartActivity extends AppCompatActivity {
                     //a toast message to view email user used to access
                     toastMessage("Succesfully signed in with: " + user.getEmail());
                     //starts new activity
-                    //startActivity(new Intent(StartActivity.this, SearchActivity.class));
-                    startActivity(new Intent(StartActivity.this, SettingsActivity.class));
+                    startActivity(new Intent(StartActivity.this, SearchActivity.class));
                     //finishes current activity, when new one is opened
                     finish();
                 } else {
@@ -131,16 +132,19 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        //adds auth listener to the auth manager
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        //if listener is not null, it removes auth listener
         if (mAuthListener != null)
             mAuth.removeAuthStateListener(mAuthListener);
     }
 
+    //shows a toast
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

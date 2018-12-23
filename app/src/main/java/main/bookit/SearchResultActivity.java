@@ -1,10 +1,15 @@
 package main.bookit;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +43,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private String userID;
     private FirebaseAuth mAuth;
     private ListView simpleList;
+    private List<Book> bookList;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -97,6 +104,7 @@ public class SearchResultActivity extends AppCompatActivity {
     }
 
     private void showData(DataSnapshot dataSnapshot, String searchBy, String searchFor) {
+        bookList = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         List<String> authors = new ArrayList<>();
         List<Status> statuses = new ArrayList<>();
@@ -111,8 +119,16 @@ public class SearchResultActivity extends AppCompatActivity {
             if(!searchResultService.matchSearch(bookS, searchBy, searchFor))
                 continue;
 
-            titles.add(bookS.getValue(Book.class).getTitle());
-            authors.add(bookS.getValue(Book.class).getAuthor());
+            Book book = new Book(bookId,
+                    bookS.getValue(Book.class).getTitle(),
+                    bookS.getValue(Book.class).getDescription(),
+                    bookS.getValue(Book.class).getAuthor(),
+                    bookS.getValue(Book.class).getAmount(),
+                    bookS.getValue(Book.class).getCategory());
+
+            bookList.add(book);
+            titles.add(book.getTitle());
+            authors.add(book.getAuthor());
             statuses.add(searchResultService.getStatus(dataSnapshot, bookId, bookS.getValue(Book.class).getAmount(), userID));
             covers.add(flags[0]);
         }
@@ -121,11 +137,26 @@ public class SearchResultActivity extends AppCompatActivity {
         String[] Author = new String[authors.size()];
         Status[] Status = new Status[statuses.size()];
 
+
         titles.toArray(Title);
         authors.toArray(Author);
         statuses.toArray(Status);
 
         CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), Title, Author, Status, flags);
+        final Context context = this;
+        simpleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Book bookToShow = bookList.get(position);
+
+                Intent intent = new Intent();
+                intent.setClass(context, BookPageActivity.class);
+                intent.putExtra("Book", bookToShow);
+
+                startActivity(intent);
+            }
+        });
+
         simpleList.setAdapter(customAdapter);
     }
 

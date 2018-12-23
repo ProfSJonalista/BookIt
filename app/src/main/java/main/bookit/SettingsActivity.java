@@ -3,7 +3,7 @@ package main.bookit;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import main.bookit.ui.settings.SettingsFragment;
+import main.bookit.ui.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 

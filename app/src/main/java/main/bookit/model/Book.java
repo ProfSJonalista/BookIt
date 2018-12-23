@@ -2,8 +2,10 @@ package main.bookit.model;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 @IgnoreExtraProperties
-public class Book {
+public class Book implements Serializable {
     private String id;
     private String image;
     private String description;
@@ -16,7 +18,8 @@ public class Book {
     public Book() {
     }
 
-    public Book(String id, String title, String description, String author, Integer amount, Category category) {
+    public Book(String id, String title, String description,
+                String author, Integer amount, Category category) {
         this.id = id;
         this.description = description;
         this.title = title;
