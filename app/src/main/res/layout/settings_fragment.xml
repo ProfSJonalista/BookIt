@@ -21,10 +21,10 @@
             android:layout_row="1"
             android:layout_column="0"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="45dp"
             android:text="@string/language_choose"
-            android:textSize="18sp"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,9 +37,9 @@
             android:layout_row="0"
             android:layout_column="1"
             android:layout_gravity="center"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="70dp"
+            android:layout_marginLeft="90dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="90dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/select_criteria_button_rounded"
             android:foregroundGravity="center"
@@ -52,10 +52,11 @@
             android:layout_marginLeft="50dp"
             android:layout_marginTop="50dp"
             android:layout_marginRight="50dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="@string/change_password"
-            android:textSize="18sp" />
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/newPassword"
@@ -87,17 +88,17 @@
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/save_button"
-            android:layout_width="wrap_content"
+            android:id="@+id/saveButton"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="75dp"
             android:background="@drawable/confirm_button_bg"
-            android:paddingLeft="50dp"
-            android:paddingTop="20dp"
-            android:paddingRight="50dp"
-            android:paddingBottom="15dp"
-            android:text="@string/save" />
+            android:elevation="6dp"
+            android:text="@string/save"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="16sp"
+            android:translationZ="4dp" />
 
     </LinearLayout>
 
