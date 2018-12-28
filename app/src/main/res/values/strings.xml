@@ -52,4 +52,5 @@
         <item>Polski</item>
     </string-array>
     <string name="language_change">Change language:</string>
+    <string name="book_unavailable">Book is unavailable</string>
 </resources>

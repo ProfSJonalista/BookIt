@@ -2,9 +2,12 @@ package main.bookit.helpers;
 
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.Date;
+
 import main.bookit.model.Book;
 import main.bookit.model.Category;
 import main.bookit.model.UserBook;
+import main.bookit.ui.fragments.ViewBookFragment;
 
 public class SearchResultService {
     public boolean matchSearch(DataSnapshot bookS, String searchBy, String searchFor) {
@@ -26,38 +29,59 @@ public class SearchResultService {
         }
     }
 
-    public Status getStatus(DataSnapshot dataSnapshot, String bookId, Integer amount, String userID) {
-        DataSnapshot userBooks = dataSnapshot.child(Children.USER_BOOKS).child(userID);
+    public Status getStatus(UserBook userBook, Integer amount) {
 
-        if (userBooks.getValue() == null) {
+        if (userBook == null) {
             if (amount == 0) {
                 return Status.NOT_AVAILABLE;
             } else {
                 return Status.AVAILABLE;
             }
         } else {
-            DataSnapshot book = userBooks.child(bookId);
+            boolean isBooked = userBook.getBooked();
 
-            if (book.getValue() == null && amount > 0) {
-                return Status.AVAILABLE;
-            } else if (book.getValue() == null && amount == 0) {
-                return Status.NOT_AVAILABLE;
-            } else {
-                String reserved = book.getValue(UserBook.class).getReturnDate();
-
-                if (reserved != null || !reserved.equals("")) {
-                    //jeśli jest po aktualnej dacie - odrezerwować i zwrócić available
-                    return Status.RESERVED;
+            if (isBooked) {
+                //TODO jeśli jest po aktualnej dacie - odrezerwować
+                Date bookDate = userBook.getBookDate();
+                CalendarService calendarService = new CalendarService();
+                if(bookDate != null && calendarService.checkIfReservationDateHasPassed(bookDate)){
+                    return Status.AVAILABLE;
                 }
 
-                String deadLine = book.getValue(UserBook.class).getReturnDate();
+                return Status.RESERVED;
+            }
 
-                if (deadLine != null || deadLine.equals("")) {
-                    return Status.OWNED;
-                }
+            Date returnDate = userBook.getReturnDate();
+
+            if (returnDate != null || !returnDate.equals("")) {
+                //TODO jeśli jest po dacie zwrotu, zwiększyść ilość książki o 1 i usunąć z książek użytkownika
+                return Status.OWNED;
             }
         }
 
         return Status.AVAILABLE;
+    }
+
+    public UserBook getUserBook(DataSnapshot dataSnapshot, String userID, String bookID) {
+        DataSnapshot user = dataSnapshot.child(Children.USER_BOOKS).child(userID);
+
+        if (user.getValue() == null)
+            return null;
+
+        DataSnapshot userBook = user.child(bookID);
+
+        if(userBook.getValue() == null)
+            return null;
+
+        return new UserBook(
+                userBook.getValue(UserBook.class).getUserId(),
+                userBook.getValue(UserBook.class).getBookId(),
+                userBook.getValue(UserBook.class).getReturnDate(),
+                userBook.getValue(UserBook.class).getLoanDate(),
+                userBook.getValue(UserBook.class).getBookDate(),
+                userBook.getValue(UserBook.class).getBooked(),
+                userBook.getValue(UserBook.class).getReturned()
+        );
+
     }
 }

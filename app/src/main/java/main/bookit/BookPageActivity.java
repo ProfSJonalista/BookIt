@@ -3,20 +3,10 @@ package main.bookit;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
-import android.widget.TextView;
 
-import main.bookit.model.Book;
+import main.bookit.ui.fragments.ViewBookFragment;
 
 public class BookPageActivity extends AppCompatActivity {
-
-    TextView titleTextView;
-    TextView authorTextView;
-    TextView genreTextView;
-    TextView publishDateTextView;
-    TextView descriptionTextView;
-
-    Button bookReservationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +15,11 @@ public class BookPageActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Book book = (Book) getIntent().getSerializableExtra("Book");
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, ViewBookFragment.newInstance())
+                    .commitNow();
 
+        }
     }
 }

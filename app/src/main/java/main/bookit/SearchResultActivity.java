@@ -30,6 +30,7 @@ import main.bookit.helpers.SearchResultService;
 import main.bookit.helpers.Status;
 import main.bookit.helpers.Children;
 import main.bookit.model.Book;
+import main.bookit.model.BookViewModel;
 import main.bookit.model.Category;
 import main.bookit.model.UserBook;
 
@@ -43,7 +44,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private String userID;
     private FirebaseAuth mAuth;
     private ListView simpleList;
-    private List<Book> bookList;
+    private List<BookViewModel> bookList;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -114,22 +115,25 @@ public class SearchResultActivity extends AppCompatActivity {
         SearchResultService searchResultService = new SearchResultService();
 
         for (DataSnapshot bookS : bookSnapshot.getChildren()) {
-            String bookId = bookS.getKey();
+            String bookID = bookS.getKey();
 
             if(!searchResultService.matchSearch(bookS, searchBy, searchFor))
                 continue;
 
-            Book book = new Book(bookId,
+            Book book = new Book(bookID,
                     bookS.getValue(Book.class).getTitle(),
                     bookS.getValue(Book.class).getDescription(),
                     bookS.getValue(Book.class).getAuthor(),
                     bookS.getValue(Book.class).getAmount(),
                     bookS.getValue(Book.class).getCategory());
 
-            bookList.add(book);
+            UserBook userBook = searchResultService.getUserBook(dataSnapshot, userID, bookID);
+            BookViewModel bookViewModel = new BookViewModel(book, userBook);
+            bookList.add(bookViewModel);
+
             titles.add(book.getTitle());
             authors.add(book.getAuthor());
-            statuses.add(searchResultService.getStatus(dataSnapshot, bookId, bookS.getValue(Book.class).getAmount(), userID));
+            statuses.add(searchResultService.getStatus(userBook, bookS.getValue(Book.class).getAmount()));
             covers.add(flags[0]);
         }
 
@@ -147,7 +151,7 @@ public class SearchResultActivity extends AppCompatActivity {
         simpleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Book bookToShow = bookList.get(position);
+                BookViewModel bookToShow = bookList.get(position);
 
                 Intent intent = new Intent();
                 intent.setClass(context, BookPageActivity.class);
