@@ -21,10 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+
 import main.bookit.R;
 import main.bookit.helpers.Children;
 import main.bookit.helpers.CalendarService;
-import main.bookit.helpers.FirebaseService;
+import main.bookit.helpers.Status;
 import main.bookit.model.Book;
 import main.bookit.model.BookViewModel;
 import main.bookit.model.UserBook;
@@ -39,11 +41,16 @@ public class ViewBookFragment extends Fragment {
     private Button bookReservationButton;
     private ImageView coverImageView;
 
-    FirebaseService firebaseService;
+    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRef;
+
+    private CalendarService calendarService;
 
     private static final String TAG = "ViewBookFragment";
 
-    public static ViewBookFragment newInstance(){
+    public static ViewBookFragment newInstance() {
         return new ViewBookFragment();
     }
 
@@ -58,47 +65,92 @@ public class ViewBookFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        firebaseService = new FirebaseService(TAG);
         setItems(this.getView());
+        setFirebase();
+        calendarService = new CalendarService();
 
         BookViewModel bookVM = (BookViewModel) this.getActivity().getIntent().getSerializableExtra("Book");
+        Status bookStatus = bookVM.getStatus();
         final Book book = bookVM.getBook();
 
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
         genreTextView.setText(book.getCategory().toString());
         descriptionContentTextView.setText(book.getDescription());
+        coverImageView.setImageResource(bookVM.getCoverId());
 
-        UserBook userBook = bookVM.getUserBook();
-        if(userBook != null){
-            //setButton(userBook);
-        }
-        else if(book.getAmount() > 0){
+        final UserBook userBook = bookVM.getUserBook();
+        if (userBook != null) {
+            if(bookStatus.equals(Status.RESERVED)){
+                setButton(getString(R.string.book_reservation_expires), userBook.getBookExpirationDate());
+            } else {
+                setButton(getString(R.string.book_return), userBook.getReturnDate());
+            }
+        } else if (book.getAmount() > 0 && !(bookStatus.equals(Status.RESERVED) || bookStatus.equals(Status.OWNED))) {
             bookReservationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String userID = firebaseService.getUserId();
-
-                    CalendarService calendarService = new CalendarService();
+                    String userID = mAuth.getCurrentUser().getUid();
 
                     UserBook userBookToAdd = new UserBook(
                             userID,
                             book.getId(),
-                            calendarService.getReturnDate(7),
-                            calendarService.getLoanDate(),
                             null,
-                            false,
+                            null,
+                            calendarService.getCurrentDate(),
+                            calendarService.getExpirationDate(3),
+                            true,
                             false);
 
-                    firebaseService.AddOrUpdateUserBook(userBookToAdd);
+                    myRef.child(Children.USER_BOOKS).child(userBookToAdd.getUserId()).child(userBookToAdd.getBookId()).setValue(userBookToAdd);
 
                     book.setAmount(book.getAmount() - 1);
-                    firebaseService.AddOrUpdateBook(book);
+                    myRef.child(Children.BOOKS).child(book.getId()).setValue(book);
+
+                    setButton(getString(R.string.book_reservation_expires), userBookToAdd.getBookExpirationDate());
                 }
             });
         } else {
-            bookReservationButton.setText(R.string.book_unavailable);
+            bookReservationButton.setText(getString(R.string.book_unavailable));
         }
+    }
+
+    private void setButton(String message, Date bookExpirationDate) {
+        String text = message + " " + calendarService.getDateAsString(bookExpirationDate);
+        bookReservationButton.setText(text);
+    }
+
+    private void setFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Object value = dataSnapshot.getValue();
+                Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
+            }
+        });
     }
 
     private void setItems(View view) {
@@ -114,21 +166,13 @@ public class ViewBookFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        firebaseService.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        firebaseService.onStop();
-    }
-
-    //add a toast to show when successfully signed in
-    /**
-     * customizable toast
-     * @param message
-     */
-    private void toastMessage(String message){
-        Toast.makeText(this.getActivity(),message,Toast.LENGTH_SHORT).show();
+        if (mAuthListener != null)
+            mAuth.removeAuthStateListener(mAuthListener);
     }
 }

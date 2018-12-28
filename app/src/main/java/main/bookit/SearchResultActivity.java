@@ -2,7 +2,6 @@ package main.bookit;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,18 +20,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.bookit.helpers.CoverService;
 import main.bookit.helpers.SearchResultService;
 import main.bookit.helpers.Status;
 import main.bookit.helpers.Children;
 import main.bookit.model.Book;
 import main.bookit.model.BookViewModel;
-import main.bookit.model.Category;
 import main.bookit.model.UserBook;
 
 
@@ -39,7 +37,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
     private static final String TAG = "SearchResultActivity";
 
-    private int flags[] = {R.drawable.cover_book_1, R.drawable.cover_book_2, R.drawable.cover_book_3, R.drawable.cover_book_4, R.drawable.cover_book_5, R.drawable.cover_book_6};
+    //private int flags[] = {R.drawable.cb_every_breath_nicholas_sparks, R.drawable.cb_fire_and_blood_george_martin, R.drawable.cb_stan_lee_bob_batchelor, R.drawable.cb_the_choice_edith_eger, R.drawable.cb_killing_commendatore_haruki_murakami, R.drawable.cb_the_stand_stephen_king};
 
     private String userID;
     private FirebaseAuth mAuth;
@@ -57,6 +55,7 @@ public class SearchResultActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         simpleList = (ListView) findViewById(R.id.searchResultListView);
+
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
@@ -108,8 +107,9 @@ public class SearchResultActivity extends AppCompatActivity {
         bookList = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         List<String> authors = new ArrayList<>();
-        List<Status> statuses = new ArrayList<>();
+        final List<Status> statuses = new ArrayList<>();
         List<Integer> covers = new ArrayList<>();
+        CoverService coverService = new CoverService();
 
         DataSnapshot bookSnapshot = dataSnapshot.child(Children.BOOKS);
         SearchResultService searchResultService = new SearchResultService();
@@ -117,7 +117,7 @@ public class SearchResultActivity extends AppCompatActivity {
         for (DataSnapshot bookS : bookSnapshot.getChildren()) {
             String bookID = bookS.getKey();
 
-            if(!searchResultService.matchSearch(bookS, searchBy, searchFor))
+            if (!searchResultService.matchSearch(bookS, searchBy, searchFor))
                 continue;
 
             Book book = new Book(bookID,
@@ -128,30 +128,34 @@ public class SearchResultActivity extends AppCompatActivity {
                     bookS.getValue(Book.class).getCategory());
 
             UserBook userBook = searchResultService.getUserBook(dataSnapshot, userID, bookID);
-            BookViewModel bookViewModel = new BookViewModel(book, userBook);
+            Status statusToAdd = searchResultService.getStatus(userBook, bookS.getValue(Book.class).getAmount());
+            Integer coverId = coverService.getCover(bookID);
+
+            BookViewModel bookViewModel = new BookViewModel(book, userBook, coverId, statusToAdd);
             bookList.add(bookViewModel);
 
             titles.add(book.getTitle());
             authors.add(book.getAuthor());
-            statuses.add(searchResultService.getStatus(userBook, bookS.getValue(Book.class).getAmount()));
-            covers.add(flags[0]);
+            statuses.add(statusToAdd);
+            covers.add(coverId);
         }
 
-        String[] Title = new String[titles.size()];
-        String[] Author = new String[authors.size()];
-        Status[] Status = new Status[statuses.size()];
+        String[] title = new String[titles.size()];
+        String[] author = new String[authors.size()];
+        Status[] status = new Status[statuses.size()];
+        int[] flags = ArrayUtils.toPrimitiveArray(covers);
 
+        titles.toArray(title);
+        authors.toArray(author);
+        statuses.toArray(status);
 
-        titles.toArray(Title);
-        authors.toArray(Author);
-        statuses.toArray(Status);
-
-        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), Title, Author, Status, flags);
+        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), title, author, status, flags);
         final Context context = this;
         simpleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BookViewModel bookToShow = bookList.get(position);
+                Status bookStatus = statuses.get(position);
 
                 Intent intent = new Intent();
                 intent.setClass(context, BookPageActivity.class);

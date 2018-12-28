@@ -14,7 +14,7 @@ public class UserBooksActivity extends AppCompatActivity {
         String  Title[] = {"Every Breath", "Fire and Blood", "Stan Lee"};
         String  Author[] = {"Nicholas Sparks", "George R. R. Martin", "Bob Batchelor"};
         String  Status[] = {"Owned", "Owned", "Reserved"};
-        int flags[] = {R.drawable.cover_book_1, R.drawable.cover_book_2, R.drawable.cover_book_3, R.drawable.cover_book_4, R.drawable.cover_book_5, R.drawable.cover_book_6};
+        int flags[] = {R.drawable.cb_every_breath_nicholas_sparks, R.drawable.cb_fire_and_blood_george_martin, R.drawable.cb_stan_lee_bob_batchelor, R.drawable.cb_the_choice_edith_eger, R.drawable.cb_killing_commendatore_haruki_murakami, R.drawable.cb_the_stand_stephen_king};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

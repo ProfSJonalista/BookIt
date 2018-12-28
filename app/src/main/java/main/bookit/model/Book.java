@@ -7,13 +7,11 @@ import java.io.Serializable;
 @IgnoreExtraProperties
 public class Book implements Serializable {
     private String id;
-    private String image;
     private String description;
     private String title;
     private String author;
     private Integer amount;
     private Category category;
-    private String coverName;
 
     public Book() {
     }
@@ -34,14 +32,6 @@ public class Book implements Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public String getDescription() {
@@ -82,13 +72,5 @@ public class Book implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public String getCoverName() {
-        return coverName;
-    }
-
-    public void setCoverName(String coverName) {
-        this.coverName = coverName;
     }
 }

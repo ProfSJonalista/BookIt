@@ -79,6 +79,7 @@ public class SearchResultService {
                 userBook.getValue(UserBook.class).getReturnDate(),
                 userBook.getValue(UserBook.class).getLoanDate(),
                 userBook.getValue(UserBook.class).getBookDate(),
+                userBook.getValue(UserBook.class).getBookExpirationDate(),
                 userBook.getValue(UserBook.class).getBooked(),
                 userBook.getValue(UserBook.class).getReturned()
         );

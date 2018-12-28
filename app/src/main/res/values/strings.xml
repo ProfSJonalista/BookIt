@@ -53,4 +53,6 @@
     </string-array>
     <string name="language_change">Change language:</string>
     <string name="book_unavailable">Book is unavailable</string>
+    <string name="book_reservation_expires">Book reservation expires on</string>
+    <string name="book_return">Book shall be returned on</string>
 </resources>

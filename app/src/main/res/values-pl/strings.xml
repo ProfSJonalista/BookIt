@@ -3,4 +3,6 @@
     <string name="language_choose">Wybierz język:</string>
     <string name="new_password">Nowe hasło</string>
     <string name="book_unavailable">Książka niedostępna</string>
+    <string name="book_reservation_expires">Rezerwacja wygasa</string>
+    <string name="book_return">Zwrot książki do dnia</string>
 </resources>
