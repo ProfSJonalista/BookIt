@@ -1,4 +1,4 @@
-package main.bookit;
+package main.bookit.ui.customs;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import main.bookit.R;
 import main.bookit.helpers.Status;
 
 public class CustomAdapter extends BaseAdapter {

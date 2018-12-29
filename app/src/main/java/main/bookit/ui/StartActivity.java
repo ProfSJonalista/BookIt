@@ -1,4 +1,4 @@
-package main.bookit;
+package main.bookit.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,14 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,18 +20,12 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.security.SecureRandom;
 import java.util.List;
 
 import io.paperdb.Paper;
-import main.bookit.helpers.Children;
+import main.bookit.R;
 import main.bookit.helpers.LocaleHelper;
-import main.bookit.model.Book;
-import main.bookit.model.Category;
-import main.bookit.helpers.RandomString;
 
 public class StartActivity extends AppCompatActivity {
 
@@ -65,7 +56,7 @@ public class StartActivity extends AppCompatActivity {
 
         //Firebase Authentication initializer
         mAuth = FirebaseAuth.getInstance();
-
+        
         //listener to check if current user is logged in
         //and to move to next Activity when login state changes
         mAuthListener = new FirebaseAuth.AuthStateListener() {

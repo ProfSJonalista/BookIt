@@ -1,4 +1,4 @@
-package main.bookit;
+package main.bookit.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -16,9 +16,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
+import main.bookit.R;
 import main.bookit.helpers.ToolbarService;
 
 

@@ -7,9 +7,8 @@ import java.util.Date;
 import main.bookit.model.Book;
 import main.bookit.model.Category;
 import main.bookit.model.UserBook;
-import main.bookit.ui.fragments.ViewBookFragment;
 
-public class SearchResultService {
+public class BookService {
     public boolean matchSearch(DataSnapshot bookS, String searchBy, String searchFor) {
         switch (searchBy) {
             case "Author name":
@@ -62,27 +61,35 @@ public class SearchResultService {
         return Status.AVAILABLE;
     }
 
-    public UserBook getUserBook(DataSnapshot dataSnapshot, String userID, String bookID) {
-        DataSnapshot user = dataSnapshot.child(Children.USER_BOOKS).child(userID);
-
-        if (user.getValue() == null)
-            return null;
-
-        DataSnapshot userBook = user.child(bookID);
+    public UserBook getUserBook(DataSnapshot userBookSnapshot, String bookID) {
+        DataSnapshot userBook = userBookSnapshot.child(bookID);
 
         if(userBook.getValue() == null)
             return null;
 
-        return new UserBook(
-                userBook.getValue(UserBook.class).getUserId(),
-                userBook.getValue(UserBook.class).getBookId(),
-                userBook.getValue(UserBook.class).getReturnDate(),
-                userBook.getValue(UserBook.class).getLoanDate(),
-                userBook.getValue(UserBook.class).getBookDate(),
-                userBook.getValue(UserBook.class).getBookExpirationDate(),
-                userBook.getValue(UserBook.class).getBooked(),
-                userBook.getValue(UserBook.class).getReturned()
-        );
+        return getUserBook(userBook);
+    }
 
+    public UserBook getUserBook(DataSnapshot newUserBook){
+        return new UserBook(
+                newUserBook.getValue(UserBook.class).getUserId(),
+                newUserBook.getValue(UserBook.class).getBookId(),
+                newUserBook.getValue(UserBook.class).getReturnDate(),
+                newUserBook.getValue(UserBook.class).getLoanDate(),
+                newUserBook.getValue(UserBook.class).getBookDate(),
+                newUserBook.getValue(UserBook.class).getBookExpirationDate(),
+                newUserBook.getValue(UserBook.class).getBooked(),
+                newUserBook.getValue(UserBook.class).getReturned()
+        );
+    }
+
+    public Book getBook(DataSnapshot newBook) {
+        return new Book(
+                newBook.getValue(Book.class).getId(),
+                newBook.getValue(Book.class).getTitle(),
+                newBook.getValue(Book.class).getDescription(),
+                newBook.getValue(Book.class).getAuthor(),
+                newBook.getValue(Book.class).getAmount(),
+                newBook.getValue(Book.class).getCategory());
     }
 }

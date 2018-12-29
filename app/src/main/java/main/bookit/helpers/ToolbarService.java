@@ -2,12 +2,11 @@ package main.bookit.helpers;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
 
 import main.bookit.R;
-import main.bookit.UserBooksActivity;
+import main.bookit.ui.UserBooksActivity;
 
 public class ToolbarService {
 

@@ -1,4 +1,4 @@
-package main.bookit;
+package main.bookit.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.util.ArrayUtils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,21 +24,21 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import main.bookit.R;
 import main.bookit.helpers.CoverService;
-import main.bookit.helpers.SearchResultService;
+import main.bookit.helpers.BookService;
 import main.bookit.helpers.Status;
 import main.bookit.helpers.Children;
 import main.bookit.helpers.ToolbarService;
 import main.bookit.model.Book;
 import main.bookit.model.BookViewModel;
 import main.bookit.model.UserBook;
+import main.bookit.ui.customs.CustomAdapter;
 
 
 public class SearchResultActivity extends AppCompatActivity {
 
     private static final String TAG = "SearchResultActivity";
-
-    //private int flags[] = {R.drawable.cb_every_breath_nicholas_sparks, R.drawable.cb_fire_and_blood_george_martin, R.drawable.cb_stan_lee_bob_batchelor, R.drawable.cb_the_choice_edith_eger, R.drawable.cb_killing_commendatore_haruki_murakami, R.drawable.cb_the_stand_stephen_king};
 
     private String userID;
     private ListView simpleList;
@@ -97,13 +96,10 @@ public class SearchResultActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    //toastMessage("Successfully signed in with: " + user.getEmail());
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    toastMessage("Successfully signed out.");
                 }
-                // ...
             }
         };
 
@@ -127,28 +123,32 @@ public class SearchResultActivity extends AppCompatActivity {
         bookList = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         List<String> authors = new ArrayList<>();
-        final List<Status> statuses = new ArrayList<>();
+        List<Status> statuses = new ArrayList<>();
         List<Integer> covers = new ArrayList<>();
+
+        BookService bookService = new BookService();
         CoverService coverService = new CoverService();
 
         DataSnapshot bookSnapshot = dataSnapshot.child(Children.BOOKS);
-        SearchResultService searchResultService = new SearchResultService();
+        DataSnapshot userBookSnapshot = dataSnapshot.child(Children.USER_BOOKS).child(userID);
 
         for (DataSnapshot newBook : bookSnapshot.getChildren()) {
             String bookID = newBook.getKey();
 
-            if (!searchResultService.matchSearch(newBook, searchBy, searchFor))
+            if (!bookService.matchSearch(newBook, searchBy, searchFor))
                 continue;
 
-            Book book = new Book(bookID,
-                    newBook.getValue(Book.class).getTitle(),
-                    newBook.getValue(Book.class).getDescription(),
-                    newBook.getValue(Book.class).getAuthor(),
-                    newBook.getValue(Book.class).getAmount(),
-                    newBook.getValue(Book.class).getCategory());
+            Book book = bookService.getBook(newBook);
 
-            UserBook userBook = searchResultService.getUserBook(dataSnapshot, userID, bookID);
-            Status statusToAdd = searchResultService.getStatus(userBook, newBook.getValue(Book.class).getAmount());
+            UserBook userBook;
+
+            if (userBookSnapshot.getValue() != null) {
+                userBook = bookService.getUserBook(userBookSnapshot, bookID);
+            } else {
+                userBook = null;
+            }
+
+            Status statusToAdd = bookService.getStatus(userBook, newBook.getValue(Book.class).getAmount());
             Integer coverId = coverService.getCover(bookID);
 
             BookViewModel bookViewModel = new BookViewModel(book, userBook, coverId, statusToAdd);
@@ -175,7 +175,6 @@ public class SearchResultActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BookViewModel bookToShow = bookList.get(position);
-                Status bookStatus = statuses.get(position);
 
                 Intent intent = new Intent();
                 intent.setClass(context, BookPageActivity.class);
@@ -200,9 +199,5 @@ public class SearchResultActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
-
-    private void toastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
