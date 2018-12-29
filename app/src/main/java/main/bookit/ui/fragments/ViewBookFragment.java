@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +26,7 @@ import main.bookit.R;
 import main.bookit.helpers.Children;
 import main.bookit.helpers.CalendarService;
 import main.bookit.helpers.Status;
+import main.bookit.helpers.ToolbarService;
 import main.bookit.model.Book;
 import main.bookit.model.BookViewModel;
 import main.bookit.model.UserBook;
@@ -48,6 +48,8 @@ public class ViewBookFragment extends Fragment {
 
     private CalendarService calendarService;
 
+    private ImageView userBooksImage;
+
     private static final String TAG = "ViewBookFragment";
 
     public static ViewBookFragment newInstance() {
@@ -67,6 +69,7 @@ public class ViewBookFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setItems(this.getView());
         setFirebase();
+        setToolbarActions();
         calendarService = new CalendarService();
 
         BookViewModel bookVM = (BookViewModel) this.getActivity().getIntent().getSerializableExtra("Book");
@@ -113,6 +116,11 @@ public class ViewBookFragment extends Fragment {
         } else {
             bookReservationButton.setText(getString(R.string.book_unavailable));
         }
+    }
+
+    private void setToolbarActions() {
+        ToolbarService toolbarService = new ToolbarService();
+        userBooksImage = toolbarService.getUserBooksImageButton(this.getActivity());
     }
 
     private void setButton(String message, Date bookExpirationDate) {

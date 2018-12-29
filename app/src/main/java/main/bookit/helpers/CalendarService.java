@@ -19,7 +19,7 @@ public class CalendarService {
         return currentDate;
     }
 
-    public boolean checkIfReservationDateHasPassed(Date bookDate) {
+    boolean checkIfReservationDateHasPassed(Date bookDate) {
         calendar.setTime(currentDate);
         return calendar.after(bookDate);
     }

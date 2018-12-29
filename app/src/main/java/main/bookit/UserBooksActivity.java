@@ -23,7 +23,7 @@ public class UserBooksActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        simpleList = (ListView)findViewById(R.id.ListView);
+        //simpleList = (ListView)findViewById(R.id.ListView);
 //        CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), Title, Author, Status, flags);
 //        simpleList.setAdapter(customAdapter);
         }

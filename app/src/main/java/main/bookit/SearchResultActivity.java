@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import main.bookit.helpers.CoverService;
 import main.bookit.helpers.SearchResultService;
 import main.bookit.helpers.Status;
 import main.bookit.helpers.Children;
+import main.bookit.helpers.ToolbarService;
 import main.bookit.model.Book;
 import main.bookit.model.BookViewModel;
 import main.bookit.model.UserBook;
@@ -40,35 +42,53 @@ public class SearchResultActivity extends AppCompatActivity {
     //private int flags[] = {R.drawable.cb_every_breath_nicholas_sparks, R.drawable.cb_fire_and_blood_george_martin, R.drawable.cb_stan_lee_bob_batchelor, R.drawable.cb_the_choice_edith_eger, R.drawable.cb_killing_commendatore_haruki_murakami, R.drawable.cb_the_stand_stephen_king};
 
     private String userID;
-    private FirebaseAuth mAuth;
     private ListView simpleList;
     private List<BookViewModel> bookList;
+
+    private FirebaseAuth mAuth;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private String searchFor;
+    private String searchBy;
+    private ImageView userBooksImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setToolbar();
 
         simpleList = (ListView) findViewById(R.id.searchResultListView);
 
+        setFirebase();
+    }
+
+    private void setToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ToolbarService toolbarService = new ToolbarService();
+        userBooksImage = toolbarService.getUserBooksImageButton(this);
+    }
+
+    private void getBundleItems() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            searchFor = bundle.getString("searchBoxValue");
+            searchBy = bundle.getString("spinnerValue");
+        }
+    }
+
+    private void setFirebase() {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        Bundle bundle = getIntent().getExtras();
-        String searchFor = null;
-        String searchBy = null;
-        if (bundle != null) {
-            searchFor = bundle.getString("searchBoxValue");
-            searchBy = bundle.getString("spinnerValue");
-        }
+        getBundleItems();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -114,21 +134,21 @@ public class SearchResultActivity extends AppCompatActivity {
         DataSnapshot bookSnapshot = dataSnapshot.child(Children.BOOKS);
         SearchResultService searchResultService = new SearchResultService();
 
-        for (DataSnapshot bookS : bookSnapshot.getChildren()) {
-            String bookID = bookS.getKey();
+        for (DataSnapshot newBook : bookSnapshot.getChildren()) {
+            String bookID = newBook.getKey();
 
-            if (!searchResultService.matchSearch(bookS, searchBy, searchFor))
+            if (!searchResultService.matchSearch(newBook, searchBy, searchFor))
                 continue;
 
             Book book = new Book(bookID,
-                    bookS.getValue(Book.class).getTitle(),
-                    bookS.getValue(Book.class).getDescription(),
-                    bookS.getValue(Book.class).getAuthor(),
-                    bookS.getValue(Book.class).getAmount(),
-                    bookS.getValue(Book.class).getCategory());
+                    newBook.getValue(Book.class).getTitle(),
+                    newBook.getValue(Book.class).getDescription(),
+                    newBook.getValue(Book.class).getAuthor(),
+                    newBook.getValue(Book.class).getAmount(),
+                    newBook.getValue(Book.class).getCategory());
 
             UserBook userBook = searchResultService.getUserBook(dataSnapshot, userID, bookID);
-            Status statusToAdd = searchResultService.getStatus(userBook, bookS.getValue(Book.class).getAmount());
+            Status statusToAdd = searchResultService.getStatus(userBook, newBook.getValue(Book.class).getAmount());
             Integer coverId = coverService.getCover(bookID);
 
             BookViewModel bookViewModel = new BookViewModel(book, userBook, coverId, statusToAdd);
