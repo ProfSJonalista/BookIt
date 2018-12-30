@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,9 +32,11 @@ public class StartActivity extends AppCompatActivity {
 
     private static final String TAG = "StartActivity";
 
-    private FirebaseAuth mAuth;                             //Firebase authentication manager
     private EditText mPasswordView;                         //password text box
     private AutoCompleteTextView mEmailView;                //email text box
+    private TextView mForgotPasswordView;                   //forgot password text view
+
+    private FirebaseAuth mAuth;                             //Firebase authentication manager
     private FirebaseAuth.AuthStateListener mAuthListener;   //Firebase authentication listener
 
     @Override
@@ -45,7 +48,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
+        setItems();
         //a tool to remember what language user is using
         Paper.init(this);
         String language = Paper.book().read("language");
@@ -56,7 +59,7 @@ public class StartActivity extends AppCompatActivity {
 
         //Firebase Authentication initializer
         mAuth = FirebaseAuth.getInstance();
-        
+
         //listener to check if current user is logged in
         //and to move to next Activity when login state changes
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -81,9 +84,6 @@ public class StartActivity extends AppCompatActivity {
                 }
             }
         };
-
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         //listens for the button to be clicked
@@ -116,6 +116,19 @@ public class StartActivity extends AppCompatActivity {
                                 }
                             }
                         });
+            }
+        });
+    }
+
+    private void setItems() {
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mForgotPasswordView = (TextView) findViewById(R.id.forgotPassword);
+
+        mForgotPasswordView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(StartActivity.this, ForgotPasswordActivity.class));
             }
         });
     }

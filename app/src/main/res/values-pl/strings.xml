@@ -5,4 +5,7 @@
     <string name="book_unavailable">Książka niedostępna</string>
     <string name="book_reservation_expires">Rezerwacja wygasa</string>
     <string name="book_return">Zwrot książki do dnia</string>
+    <string name="email_sent">"Email został wysłany do "</string>
+    <string name="passwords_do_not_match">Oba hasła muszą być takie same</string>
+    <string name="password_updated">Hasło zaktualizowane</string>
 </resources>

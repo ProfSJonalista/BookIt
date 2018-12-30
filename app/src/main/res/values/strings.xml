@@ -55,4 +55,7 @@
     <string name="book_unavailable">Book is unavailable</string>
     <string name="book_reservation_expires">Book reservation expires on</string>
     <string name="book_return">Book shall be returned on</string>
+    <string name="email_sent">Email sent to</string>
+    <string name="passwords_do_not_match">Both passwords must be the same</string>
+    <string name="password_updated">Password updated</string>
 </resources>

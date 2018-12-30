@@ -6,14 +6,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import io.paperdb.Paper;
 import main.bookit.R;
@@ -21,8 +29,13 @@ import main.bookit.helpers.LocaleHelper;
 
 public class SettingsFragment extends Fragment {
 
-    TextView text;
-    Button saveButton;
+    private static final String TAG = "SettingsFragment";
+
+    private TextView languageChooseText;
+    private EditText newPasswordText;
+    private EditText confirmPasswordText;
+    private Button saveButton;
+    private Spinner languageSpinner;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -33,12 +46,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
-        Spinner spinner = (Spinner) view.findViewById(R.id.languageSpinner);
-        String[] values = { "English", "Polski"};
-        text = (TextView) view.findViewById(R.id.languageChooseId);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
-        spinner.setAdapter(adapter);
+        setItems(view);
 
         Paper.init(this.getActivity());
 
@@ -47,8 +55,17 @@ public class SettingsFragment extends Fragment {
             Paper.book().write("language", "en");
         }
 
+        return view;
+    }
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    private void setItems(View view) {
+        languageChooseText = (TextView) view.findViewById(R.id.languageChooseId);
+
+        languageSpinner = (Spinner) view.findViewById(R.id.languageSpinner);
+        String[] values = { "English", "Polski"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        languageSpinner.setAdapter(adapter);
+        languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
@@ -68,7 +85,37 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        return view;
+        newPasswordText = view.findViewById(R.id.newPassword);
+        confirmPasswordText = view.findViewById(R.id.confirmPassword);
+        saveButton = view.findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newPassword = newPasswordText.getText().toString();
+                String confirmPassword = confirmPasswordText.getText().toString();
+
+                if (newPassword.equals(confirmPassword)){
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                    //user.re
+                    user.updatePassword(newPassword)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User password updated.");
+                                        toastMessage(getString(R.string.password_updated));
+                                    } else {
+                                        String e = task.getException().getLocalizedMessage();
+                                        toastMessage("Failed");
+                                    }
+                                }
+                            });
+                } else {
+                    toastMessage(getString(R.string.passwords_do_not_match));
+                }
+            }
+        });
     }
 
     @Override
@@ -83,6 +130,10 @@ public class SettingsFragment extends Fragment {
 
         //ZMIENIAMY JĘZYK TUTAJ
         //TODO - sprawdzić czy na pozostałych też się zmienia
-        text.setText(resources.getString(R.string.language_change));
+        languageChooseText.setText(resources.getString(R.string.language_change));
+    }
+
+    private void toastMessage(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }
