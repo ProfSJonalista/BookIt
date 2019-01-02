@@ -1,5 +1,5 @@
 package main.bookit.model;
 
 public enum Category {
-    SCIENCE_FICTION, HORROR, NOVEL
+    SCIENCE_FICTION, HORROR, NOVEL, FANTASY
 }

@@ -1,4 +1,4 @@
-package main.bookit;
+package main.bookit.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,35 +10,52 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
+import main.bookit.R;
+import main.bookit.helpers.ToolbarService;
 
 
 public class SearchActivity extends AppCompatActivity {
 
     private static final String TAG = "SearchActivity";
-    Button searchButton;
-    Toolbar toolbar;
-    Spinner categorySpinner;
-    EditText searchBox;
 
-    private FirebaseDatabase mFirebaseDatabase;
+    Toolbar toolbar;
+    EditText searchBox;
+    Button searchButton;
+    Spinner categorySpinner;
+    ImageView userBooksImage;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+        setToolbar();
+        setFirebase();
+        setCategorySpinner();
 
+        searchBox = (EditText) findViewById(R.id.searchBox);
+        setButton();
+    }
+
+    private void setToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ToolbarService toolbarService = new ToolbarService();
+        userBooksImage = toolbarService.getUserBooksImageButton(this);
+    }
+
+    private void setFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -52,10 +69,9 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         };
+    }
 
-        setContentView(R.layout.activity_search);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    private void setCategorySpinner() {
         categorySpinner = findViewById(R.id.categorySpinner);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -63,8 +79,9 @@ public class SearchActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
-        searchBox = (EditText) findViewById(R.id.searchBox);
+    }
 
+    private void setButton() {
         searchButton = (Button) findViewById(R.id.searchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override

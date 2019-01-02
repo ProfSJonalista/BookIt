@@ -1,9 +1,10 @@
-package main.bookit;
+package main.bookit.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import main.bookit.ui.settings.SettingsFragment;
+import main.bookit.R;
+import main.bookit.ui.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 

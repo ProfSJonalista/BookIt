@@ -1,4 +1,4 @@
-package main.bookit;
+package main.bookit.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,26 +21,22 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.security.SecureRandom;
 import java.util.List;
 
 import io.paperdb.Paper;
-import main.bookit.helpers.Children;
+import main.bookit.R;
 import main.bookit.helpers.LocaleHelper;
-import main.bookit.model.Book;
-import main.bookit.model.Category;
-import main.bookit.helpers.RandomString;
 
 public class StartActivity extends AppCompatActivity {
 
     private static final String TAG = "StartActivity";
 
-    private FirebaseAuth mAuth;                             //Firebase authentication manager
     private EditText mPasswordView;                         //password text box
     private AutoCompleteTextView mEmailView;                //email text box
+    private TextView mForgotPasswordView;                   //forgot password text view
+
+    private FirebaseAuth mAuth;                             //Firebase authentication manager
     private FirebaseAuth.AuthStateListener mAuthListener;   //Firebase authentication listener
 
     @Override
@@ -54,10 +48,12 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        setItems();
+        //a tool to remember what language user is using
         Paper.init(this);
-
         String language = Paper.book().read("language");
         if(language == null){
+            //if nothing is written, english is set as default language
             Paper.book().write("language", "en");
         }
 
@@ -77,8 +73,7 @@ public class StartActivity extends AppCompatActivity {
                     //a toast message to view email user used to access
                     toastMessage("Succesfully signed in with: " + user.getEmail());
                     //starts new activity
-                    //startActivity(new Intent(StartActivity.this, SearchActivity.class));
-                    startActivity(new Intent(StartActivity.this, SettingsActivity.class));
+                    startActivity(new Intent(StartActivity.this, SearchActivity.class));
                     //finishes current activity, when new one is opened
                     finish();
                 } else {
@@ -89,9 +84,6 @@ public class StartActivity extends AppCompatActivity {
                 }
             }
         };
-
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         //listens for the button to be clicked
@@ -128,19 +120,35 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
+    private void setItems() {
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mForgotPasswordView = (TextView) findViewById(R.id.forgotPassword);
+
+        mForgotPasswordView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(StartActivity.this, ForgotPasswordActivity.class));
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
+        //adds auth listener to the auth manager
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        //if listener is not null, it removes auth listener
         if (mAuthListener != null)
             mAuth.removeAuthStateListener(mAuthListener);
     }
 
+    //shows a toast
     private void toastMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

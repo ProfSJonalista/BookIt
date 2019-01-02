@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/BgColor"
     android:visibility="visible"
-    tools:context=".ui.settings.SettingsFragment">
+    tools:context=".ui.fragments.SettingsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
