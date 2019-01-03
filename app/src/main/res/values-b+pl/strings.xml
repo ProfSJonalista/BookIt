@@ -37,6 +37,9 @@
     <string name="language_change">Zmień:</string>
     <string name="change_password">Zmień hasło</string>
     <string name="confirm_password">Potwierdź hasło</string>
+    <string name="remind_password">Przypomnij hasło</string>
+    <string name="current_password">Aktualne hasło</string>
+    <string name="book_status">Status książki</string>
 
     <!-- SpinnerArrays -->
 

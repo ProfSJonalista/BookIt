@@ -58,4 +58,7 @@
     <string name="email_sent">Email sent to</string>
     <string name="passwords_do_not_match">Both passwords must be the same</string>
     <string name="password_updated">Password updated</string>
+    <string name="remind_password">REMIND PASSWORD</string>
+    <string name="current_password">Current password</string>
+    <string name="book_status">Book status</string>
 </resources>
