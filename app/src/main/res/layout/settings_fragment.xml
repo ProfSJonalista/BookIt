@@ -69,15 +69,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+
             android:layout_marginTop="35dp"
             android:layout_marginBottom="10dp"
             android:text="@string/language_choose"
             android:textColor="@color/common_google_signin_btn_text_dark_default"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp"/>
 
         <Spinner
             android:id="@+id/languageSpinner"
@@ -103,7 +100,8 @@
             android:gravity="center"
             android:text="@string/change_password"
             android:textColor="@color/common_google_signin_btn_text_dark_default"
-            android:textSize="18sp" />
+
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/currentPassword"
@@ -156,6 +154,7 @@
             tools:ignore="Autofill" />
 
         <Button
+
             android:id="@+id/save_button"
             android:layout_width="140dp"
             android:layout_height="45dp"

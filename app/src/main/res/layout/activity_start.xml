@@ -44,6 +44,7 @@
                 app:srcCompat="@drawable/bookit_logo"
                 tools:ignore="ContentDescription"/>
 
+
             <AutoCompleteTextView
                 android:id="@+id/email"
                 android:layout_width="match_parent"
@@ -125,7 +126,6 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:translationZ="4dp" />
-
 
         </LinearLayout>
     </ScrollView>

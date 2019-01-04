@@ -43,6 +43,7 @@
         <activity
             android:name=".ui.UserBookPageActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.SettingsActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
