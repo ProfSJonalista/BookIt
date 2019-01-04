@@ -111,6 +111,7 @@ public class ViewBookFragment extends Fragment {
                     myRef.child(Children.BOOKS).child(book.getId()).setValue(book);
 
                     setButton(getString(R.string.book_reservation_expires), userBookToAdd.getBookExpirationDate());
+                    //TODO - w layout zmieniać visibility buttonów
                 }
             });
         } else {

@@ -20,15 +20,27 @@
             android:background="@color/colorPrimary">
 
             <ImageView
+                android:id="@+id/settingsIcon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="9dp"
+                android:padding="8dp"
+                app:srcCompat="@drawable/settings_icon"
+                tools:ignore="ContentDescription"/>
+
+            <ImageView
                 android:id="@+id/searchIcon"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
+                android:layout_marginStart="215dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginRight="11dp"
                 android:padding="10dp"
-                android:src="@drawable/search_icon" />
+                android:src="@drawable/search_icon"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/title"
@@ -47,12 +59,11 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginTop="0dp"
-                android:layout_marginEnd="77dp"
-                android:layout_marginRight="77dp"
+                android:layout_marginEnd="68dp"
                 android:padding="6dp"
-                app:srcCompat="@drawable/user_books" />
+                app:srcCompat="@drawable/user_books"
+                tools:ignore="ContentDescription" />
 
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
@@ -73,12 +84,14 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="146dp"
+                    android:layout_height="206dp"
+                    android:layout_gravity="center"
                     android:layout_margin="20dp"
                     android:background="@drawable/item_list_border"
                     android:padding="3dp"
-                    app:srcCompat="@drawable/cb_every_breath_nicholas_sparks" />
+                    app:srcCompat="@drawable/cb_every_breath_nicholas_sparks"
+                    tools:ignore="ContentDescription" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -90,9 +103,9 @@
                         android:id="@+id/bookTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="20dp"
                         android:text="@string/book_title"
                         android:textSize="22sp"
@@ -102,9 +115,9 @@
                         android:id="@+id/author"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="20dp"
                         android:text="@string/book_author"
                         android:textSize="20sp" />
@@ -113,9 +126,9 @@
                         android:id="@+id/genre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="10dp"
                         android:text="@string/genre"
                         android:textSize="18sp" />
@@ -124,9 +137,9 @@
                         android:id="@+id/publishDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginEnd="20dp"
                         android:layout_marginBottom="10dp"
                         android:text="@string/publish_date"
                         android:textSize="18sp" />
@@ -142,7 +155,7 @@
 
                 <TextView
                     android:id="@+id/dateToGiveBack"
-                    android:layout_width="300dp"
+                    android:layout_width="330dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
@@ -150,6 +163,7 @@
                     android:background="@drawable/date_to_give_back_bg"
                     android:gravity="center"
                     android:text="@string/give_back_to"
+                    android:textColor="@color/darkGray"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:visibility="gone" />

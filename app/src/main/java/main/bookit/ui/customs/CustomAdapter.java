@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import main.bookit.R;
 import main.bookit.helpers.Status;
-
+//TODO - na podstawie statusu, przydzielać kolor ze statusem
 public class CustomAdapter extends BaseAdapter {
     Context context;
     String Title[];

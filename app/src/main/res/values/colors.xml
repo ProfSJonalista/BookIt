@@ -6,4 +6,5 @@
     <color name="BgColor">#00687d</color>
     <color name="ChooseColor">#73aab5</color>
     <color name="searchButtonText">#282700</color>
+    <color name="darkGray">#636363</color>
 </resources>
