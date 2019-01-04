@@ -40,6 +40,7 @@
     <string name="remind_password">Przypomnij hasło</string>
     <string name="current_password">Aktualne hasło</string>
     <string name="book_status">Status książki</string>
+    <string name="logout">WYLOGUJ</string>
 
     <!-- SpinnerArrays -->
 
