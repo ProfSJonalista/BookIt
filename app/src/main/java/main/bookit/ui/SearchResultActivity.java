@@ -1,5 +1,6 @@
 package main.bookit.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import main.bookit.helpers.ToolbarService;
 import main.bookit.model.Book;
 import main.bookit.model.BookViewModel;
 import main.bookit.model.UserBook;
+import main.bookit.model.viewModels.SearchResultViewModel;
 import main.bookit.ui.customs.CustomAdapter;
 
 
@@ -60,6 +62,11 @@ public class SearchResultActivity extends AppCompatActivity {
         setToolbar();
 
         simpleList = (ListView) findViewById(R.id.searchResultListView);
+
+        SearchResultViewModel searchResultViewModel = ViewModelProviders.of(this).get(SearchResultViewModel.class);
+        searchResultViewModel.getCustomAdapter().observe(this, customAdapter ->{
+            simpleList.setAdapter(customAdapter);
+        });
 
         setFirebase();
     }
