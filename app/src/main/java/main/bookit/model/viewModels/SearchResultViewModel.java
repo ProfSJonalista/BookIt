@@ -24,6 +24,6 @@ public class SearchResultViewModel extends ViewModel {
     }
 
     private void loadCustomAdapter() {
-
+        customAdapterLD = searchResultService.getCustomAdapter();
     }
 }
