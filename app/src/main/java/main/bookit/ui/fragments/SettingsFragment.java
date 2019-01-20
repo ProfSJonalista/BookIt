@@ -1,6 +1,7 @@
 package main.bookit.ui.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import io.paperdb.Paper;
 import main.bookit.R;
 import main.bookit.helpers.LocaleHelper;
 import main.bookit.helpers.ToolbarService;
+import main.bookit.ui.StartActivity;
 
 public class SettingsFragment extends Fragment {
 
@@ -39,6 +41,10 @@ public class SettingsFragment extends Fragment {
     private EditText confirmPasswordText;
     private Button saveButton;
     private Spinner languageSpinner;
+    private Button logoutButton;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     //toolbar
     private ImageView userBooksImage;
@@ -66,8 +72,10 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setItems(View view) {
-        languageChooseText = (TextView) view.findViewById(R.id.languageChooseId);
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
 
+        languageChooseText = (TextView) view.findViewById(R.id.languageChooseId);
         languageSpinner = (Spinner) view.findViewById(R.id.languageSpinner);
         String[] values = { "English", "Polski"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
@@ -94,34 +102,38 @@ public class SettingsFragment extends Fragment {
 
         newPasswordText = view.findViewById(R.id.newPassword);
         confirmPasswordText = view.findViewById(R.id.confirmPassword);
+
         saveButton = view.findViewById(R.id.save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newPassword = newPasswordText.getText().toString();
-                String confirmPassword = confirmPasswordText.getText().toString();
+        saveButton.setOnClickListener(v -> {
+            String newPassword = newPasswordText.getText().toString();
+            String confirmPassword = confirmPasswordText.getText().toString();
 
-                if (newPassword.equals(confirmPassword)){
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (newPassword.equals(confirmPassword)){
 
-                    //user.re
-                    user.updatePassword(newPassword)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d(TAG, "User password updated.");
-                                        toastMessage(getString(R.string.password_updated));
-                                    } else {
-                                        String e = task.getException().getLocalizedMessage();
-                                        toastMessage("Failed");
-                                    }
+
+                //user.re
+                user.updatePassword(newPassword)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User password updated.");
+                                    toastMessage(getString(R.string.password_updated));
+                                } else {
+                                    String e = task.getException().getLocalizedMessage();
+                                    toastMessage("Failed");
                                 }
-                            });
-                } else {
-                    toastMessage(getString(R.string.passwords_do_not_match));
-                }
+                            }
+                        });
+            } else {
+                toastMessage(getString(R.string.passwords_do_not_match));
             }
+        });
+
+        logoutButton = view.findViewById(R.id.logout);
+        logoutButton.setOnClickListener(v -> {
+            mAuth.signOut();
+            this.getActivity().startActivity(new Intent(this.getActivity(), StartActivity.class));
         });
     }
 
