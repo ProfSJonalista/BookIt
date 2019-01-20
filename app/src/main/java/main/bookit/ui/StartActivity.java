@@ -62,26 +62,23 @@ public class StartActivity extends AppCompatActivity {
 
         //listener to check if current user is logged in
         //and to move to next Activity when login state changes
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //downloads user
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //if user isn't null, his ID is written in logs
-                    Log.d(TAG, "onAuthStateChanged:signed_in" + user.getUid());
-                    //a toast message to view email user used to access
-                    toastMessage("Succesfully signed in with: " + user.getEmail());
-                    //starts new activity
-                    startActivity(new Intent(StartActivity.this, SearchActivity.class));
-                    //finishes current activity, when new one is opened
-                    finish();
-                } else {
-                    //when user signs out, it is written in logs
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //a toast message to inform user he signed out
-                    toastMessage("Successfully signed out");
-                }
+        mAuthListener = firebaseAuth -> {
+            //downloads user
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                //if user isn't null, his ID is written in logs
+                Log.d(TAG, "onAuthStateChanged:signed_in" + user.getUid());
+                //a toast message to view email user used to access
+                toastMessage("Succesfully signed in with: " + user.getEmail());
+                //starts new activity
+                startActivity(new Intent(StartActivity.this, SearchActivity.class));
+                //finishes current activity, when new one is opened
+                finish();
+            } else {
+                //when user signs out, it is written in logs
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                //a toast message to inform user he signed out
+                toastMessage("Successfully signed out");
             }
         };
 
