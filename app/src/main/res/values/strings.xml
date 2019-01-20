@@ -62,4 +62,5 @@
     <string name="current_password">Current password</string>
     <string name="book_status">Book status</string>
     <string name="wrong_email">Email is incorrect</string>
+    <string name="logout">LOGOUT</string>
 </resources>
