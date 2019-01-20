@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import io.paperdb.Paper;
 import main.bookit.R;
 import main.bookit.helpers.LocaleHelper;
+import main.bookit.helpers.ToolbarService;
 
 public class SettingsFragment extends Fragment {
 
@@ -36,6 +39,10 @@ public class SettingsFragment extends Fragment {
     private EditText confirmPasswordText;
     private Button saveButton;
     private Spinner languageSpinner;
+
+    //toolbar
+    private ImageView userBooksImage;
+    private ImageView searchImage;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -121,6 +128,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        setToolbarActions();
     }
 
     private void updateView(String language) {
@@ -131,6 +140,12 @@ public class SettingsFragment extends Fragment {
         //ZMIENIAMY JĘZYK TUTAJ
         //TODO - sprawdzić czy na pozostałych też się zmienia
         languageChooseText.setText(resources.getString(R.string.language_change));
+    }
+
+    private void setToolbarActions() {
+        ToolbarService toolbarService = new ToolbarService();
+        userBooksImage = toolbarService.getUserBooksImageButton(this.getActivity());
+        searchImage = toolbarService.getSearchImageButton(this.getActivity());
     }
 
     private void toastMessage(String message) {

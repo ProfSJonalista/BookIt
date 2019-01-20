@@ -8,4 +8,5 @@
     <string name="email_sent">"Email został wysłany do "</string>
     <string name="passwords_do_not_match">Oba hasła muszą być takie same</string>
     <string name="password_updated">Hasło zaktualizowane</string>
+    <string name="wrong_email">Email nieprawidłowy</string>
 </resources>

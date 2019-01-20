@@ -29,8 +29,11 @@ public class SearchActivity extends AppCompatActivity {
     EditText searchBox;
     Button searchButton;
     Spinner categorySpinner;
+    //toolbar
     ImageView userBooksImage;
+    ImageView settingsImage;
 
+    //Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -52,6 +55,7 @@ public class SearchActivity extends AppCompatActivity {
 
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this);
+        settingsImage = toolbarService.getSettingsImageButton(this);
     }
 
     private void setFirebase() {

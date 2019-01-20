@@ -48,7 +48,10 @@ public class ViewBookFragment extends Fragment {
 
     private CalendarService calendarService;
 
+    //toolbar
     private ImageView userBooksImage;
+    private ImageView settingsImage;
+    private ImageView searchImage;
 
     private static final String TAG = "ViewBookFragment";
 
@@ -122,6 +125,8 @@ public class ViewBookFragment extends Fragment {
     private void setToolbarActions() {
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this.getActivity());
+        settingsImage = toolbarService.getSettingsImageButton(this.getActivity());
+        searchImage = toolbarService.getSearchImageButton(this.getActivity());
     }
 
     private void setButton(String message, Date bookExpirationDate) {

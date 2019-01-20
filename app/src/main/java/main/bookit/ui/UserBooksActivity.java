@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.android.gms.common.util.ArrayUtils;
@@ -49,6 +50,9 @@ public class UserBooksActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private ImageView settingsImage;
+    private ImageView searchImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,10 @@ public class UserBooksActivity extends AppCompatActivity {
     private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ToolbarService toolbarService = new ToolbarService();
+        settingsImage = toolbarService.getSettingsImageButton(this);
+        searchImage = toolbarService.getSearchImageButton(this);
     }
 
     private void setFirebase() {

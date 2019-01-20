@@ -51,7 +51,11 @@ public class SearchResultActivity extends AppCompatActivity {
 
     private String searchFor;
     private String searchBy;
+
+    //toolbar
     private ImageView userBooksImage;
+    private ImageView settingsImage;
+    private ImageView searchImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,8 @@ public class SearchResultActivity extends AppCompatActivity {
 
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this);
+        settingsImage = toolbarService.getSettingsImageButton(this);
+        searchImage = toolbarService.getSearchImageButton(this);
     }
 
     private void getBundleItems() {
