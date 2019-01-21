@@ -47,11 +47,14 @@ public class SearchResultActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     private String searchFor;
     private String searchBy;
+
+    //toolbar
     private ImageView userBooksImage;
+    private ImageView settingsImage;
+    private ImageView searchImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,8 @@ public class SearchResultActivity extends AppCompatActivity {
 
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this);
+        settingsImage = toolbarService.getSettingsImageButton(this);
+        searchImage = toolbarService.getSearchImageButton(this);
     }
 
     private void getBundleItems() {
@@ -89,23 +94,10 @@ public class SearchResultActivity extends AppCompatActivity {
 
         getBundleItems();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-
         final String finalSearchFor = searchFor;
         final String finalSearchBy = searchBy;
 
+        //adds listener to show data
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -113,14 +105,14 @@ public class SearchResultActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
     private void showData(DataSnapshot dataSnapshot, String searchBy, String searchFor) {
         bookList = new ArrayList<>();
+
+        //creates temporary lists to adapt in CustomAdapter for list view
         List<String> titles = new ArrayList<>();
         List<String> authors = new ArrayList<>();
         List<Status> statuses = new ArrayList<>();
@@ -129,12 +121,17 @@ public class SearchResultActivity extends AppCompatActivity {
         BookService bookService = new BookService();
         CoverService coverService = new CoverService();
 
+        //gets DataSnapshot of books
         DataSnapshot bookSnapshot = dataSnapshot.child(Children.BOOKS);
+
+        //gets DataSnapshot of user books
         DataSnapshot userBookSnapshot = dataSnapshot.child(Children.USER_BOOKS).child(userID);
 
+        //foreach book in list of books in database, it's processed
         for (DataSnapshot newBook : bookSnapshot.getChildren()) {
             String bookID = newBook.getKey();
 
+            //if book does not meet match criteria, it gets rejected
             if (!bookService.matchSearch(newBook, searchBy, searchFor))
                 continue;
 
@@ -148,18 +145,25 @@ public class SearchResultActivity extends AppCompatActivity {
                 userBook = null;
             }
 
+            //gets book status
             Status statusToAdd = bookService.getStatus(userBook, newBook.getValue(Book.class).getAmount());
+
+            //gets book cover id
             Integer coverId = coverService.getCover(bookID);
 
             BookViewModel bookViewModel = new BookViewModel(book, userBook, coverId, statusToAdd);
+
+            //adds book to list to get book later
             bookList.add(bookViewModel);
 
+            //items are added to temporary lists
             titles.add(book.getTitle());
             authors.add(book.getAuthor());
             statuses.add(statusToAdd);
             covers.add(coverId);
         }
 
+        //lists are converted to primitive arrays to pass it to CustomAdapter constructor
         String[] title = new String[titles.size()];
         String[] author = new String[authors.size()];
         Status[] status = new Status[statuses.size()];
@@ -171,33 +175,31 @@ public class SearchResultActivity extends AppCompatActivity {
 
         CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), title, author, status, flags);
         final Context context = this;
-        simpleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BookViewModel bookToShow = bookList.get(position);
 
-                Intent intent = new Intent();
-                intent.setClass(context, BookPageActivity.class);
-                intent.putExtra("Book", bookToShow);
+        //sets onClickListener to view specific book
+        simpleList.setOnItemClickListener(
+                (parent, view, position, id) -> {
+                    BookViewModel bookToShow = bookList.get(position);
 
-                startActivity(intent);
-            }
-        });
+                    //book is added to intent extras
+                    Intent intent = new Intent();
+                    intent.setClass(context, BookPageActivity.class);
+                    intent.putExtra("Book", bookToShow);
 
+                    startActivity(intent);
+                });
+
+        //sets adapter to the list
         simpleList.setAdapter(customAdapter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 }

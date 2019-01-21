@@ -9,22 +9,26 @@ public class CalendarService {
     private Date currentDate = new Date();
     private Calendar calendar = Calendar.getInstance();
 
+    //checks expiration date
     public Date getExpirationDate(int daysToAdd) {
         calendar.setTime(currentDate);
         calendar.add(Calendar.DATE, daysToAdd);
         return calendar.getTime();
     }
 
+    //returns current date
     public Date getCurrentDate() {
         return currentDate;
     }
 
+    //checks if reservation date has passed
     boolean checkIfReservationDateHasPassed(Date bookDate) {
         calendar.setTime(currentDate);
         return calendar.after(bookDate);
     }
 
-    public String getDateAsString(Date date){
+    //maps date to string
+    public String getDateAsString(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(date);
     }

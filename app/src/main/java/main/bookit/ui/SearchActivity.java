@@ -29,8 +29,11 @@ public class SearchActivity extends AppCompatActivity {
     EditText searchBox;
     Button searchButton;
     Spinner categorySpinner;
+    //toolbar
     ImageView userBooksImage;
+    ImageView settingsImage;
 
+    //Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -52,21 +55,17 @@ public class SearchActivity extends AppCompatActivity {
 
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this);
+        settingsImage = toolbarService.getSettingsImageButton(this);
     }
 
     private void setFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    toastMessage("Successfully signed in with: " + user.getEmail());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    toastMessage("Successfully signed out.");
-                }
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
             }
         };
     }
@@ -83,23 +82,21 @@ public class SearchActivity extends AppCompatActivity {
 
     private void setButton() {
         searchButton = (Button) findViewById(R.id.searchButton);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        searchButton.setOnClickListener(v -> {
 
-                final String searchBoxValue = searchBox.getText().toString();
-                final String spinnerValue = categorySpinner.getSelectedItem().toString();
+            final String searchBoxValue = searchBox.getText().toString();
+            final String spinnerValue = categorySpinner.getSelectedItem().toString();
 
-                if (!searchBoxValue.equals("")) {
-                    Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("searchBoxValue", searchBoxValue);
-                    bundle.putString("spinnerValue", spinnerValue);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                } else {
-                    toastMessage("Search box cannot be empty!");
-                }
+            //if search box value is not empty, value is put in the bundle to take it to next activity and starts SearchResultActivity
+            if (!searchBoxValue.equals("")) {
+                Intent intent = new Intent(SearchActivity.this, SearchResultActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("searchBoxValue", searchBoxValue);
+                bundle.putString("spinnerValue", spinnerValue);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } else {
+                toastMessage("Search box cannot be empty!");
             }
         });
     }
@@ -118,7 +115,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    private void toastMessage(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+    private void toastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

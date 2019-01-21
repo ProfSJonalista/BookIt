@@ -62,61 +62,53 @@ public class StartActivity extends AppCompatActivity {
 
         //listener to check if current user is logged in
         //and to move to next Activity when login state changes
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //downloads user
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    //if user isn't null, his ID is written in logs
-                    Log.d(TAG, "onAuthStateChanged:signed_in" + user.getUid());
-                    //a toast message to view email user used to access
-                    toastMessage("Succesfully signed in with: " + user.getEmail());
-                    //starts new activity
-                    startActivity(new Intent(StartActivity.this, SearchActivity.class));
-                    //finishes current activity, when new one is opened
-                    finish();
-                } else {
-                    //when user signs out, it is written in logs
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    //a toast message to inform user he signed out
-                    toastMessage("Successfully signed out");
-                }
+        mAuthListener = firebaseAuth -> {
+            //downloads user
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                //if user isn't null, his ID is written in logs
+                Log.d(TAG, "onAuthStateChanged:signed_in" + user.getUid());
+                //a toast message to view email user used to access
+                toastMessage("Succesfully signed in with: " + user.getEmail());
+                //starts new activity
+                startActivity(new Intent(StartActivity.this, SearchActivity.class));
+                //finishes current activity, when new one is opened
+                finish();
+            } else {
+                //when user signs out, it is written in logs
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                //a toast message to inform user he signed out
+                toastMessage("Successfully signed out");
             }
         };
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         //listens for the button to be clicked
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //gets user email
-                final String email = mEmailView.getText().toString();
-                //gets user password
-                final String pass = mPasswordView.getText().toString();
+        mEmailSignInButton.setOnClickListener(
+                view -> {
+            //gets user email
+            final String email = mEmailView.getText().toString();
+            //gets user password
+            final String pass = mPasswordView.getText().toString();
 
-                //fetches sign in methods for email user has given
-                mAuth.fetchSignInMethodsForEmail(email)
-                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                                //if task is successful AND user has sign in methods, logs in user to the application
-                                if (task.isSuccessful()) {
-                                    SignInMethodQueryResult result = task.getResult();
-                                    List<String> signInMethods = result.getSignInMethods();
-                                    if (signInMethods != null && signInMethods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
-                                        mAuth.signInWithEmailAndPassword(email, pass);
-                                    } else {
-                                        mAuth.createUserWithEmailAndPassword(email, pass);
-                                    }
-                                    //if not, registers user
-                                } else {
-                                    mAuth.createUserWithEmailAndPassword(email, pass);
-                                    Log.e(TAG, "Error getting sign in methods for user", task.getException());
-                                }
+            //fetches sign in methods for email user has given
+            mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(
+                    task -> {
+                        //if task is successful AND user has sign in methods, logs in user to the application
+                        if (task.isSuccessful()) {
+                            SignInMethodQueryResult result = task.getResult();
+                            List<String> signInMethods = result.getSignInMethods();
+                            if (signInMethods != null && signInMethods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
+                                mAuth.signInWithEmailAndPassword(email, pass);
+                            } else {
+                                mAuth.createUserWithEmailAndPassword(email, pass);
                             }
-                        });
-            }
+                            //if not, registers user
+                        } else {
+                            mAuth.createUserWithEmailAndPassword(email, pass);
+                            Log.e(TAG, "Error getting sign in methods for user", task.getException());
+                        }
+                    });
         });
     }
 
@@ -125,12 +117,8 @@ public class StartActivity extends AppCompatActivity {
         mPasswordView = (EditText) findViewById(R.id.password);
         mForgotPasswordView = (TextView) findViewById(R.id.forgotPassword);
 
-        mForgotPasswordView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(StartActivity.this, ForgotPasswordActivity.class));
-            }
-        });
+        mForgotPasswordView.setOnClickListener(
+                v -> startActivity(new Intent(StartActivity.this, ForgotPasswordActivity.class)));
     }
 
     @Override

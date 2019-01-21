@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import main.bookit.helpers.Status;
 
+//view model for BookViewFragment
 public class BookViewModel implements Serializable {
     private Book book;
     private UserBook userBook;

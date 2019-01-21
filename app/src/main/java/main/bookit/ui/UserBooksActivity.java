@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.android.gms.common.util.ArrayUtils;
@@ -47,7 +48,9 @@ public class UserBooksActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private ImageView settingsImage;
+    private ImageView searchImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +63,17 @@ public class UserBooksActivity extends AppCompatActivity {
         setFirebase();
     }
 
+    //sets toolbar
     private void setToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ToolbarService toolbarService = new ToolbarService();
+        settingsImage = toolbarService.getSettingsImageButton(this);
+        searchImage = toolbarService.getSearchImageButton(this);
     }
 
+    //sets Firebase
     private void setFirebase() {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -72,20 +81,7 @@ public class UserBooksActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-
+        //shows user books
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -101,6 +97,8 @@ public class UserBooksActivity extends AppCompatActivity {
 
     private void showData(DataSnapshot dataSnapshot) {
         bookList = new ArrayList<>();
+
+        //creates temporary lists to adapt in CustomAdapter for list view
         List<String> titles = new ArrayList<>();
         List<String> authors = new ArrayList<>();
         List<Status> statuses = new ArrayList<>();
@@ -109,14 +107,21 @@ public class UserBooksActivity extends AppCompatActivity {
         BookService bookService = new BookService();
         CoverService coverService = new CoverService();
 
+        //gets DataSnapshot of books
         DataSnapshot bookSnapshot = dataSnapshot.child(Children.BOOKS);
+
+        //gets DataSnapshot of user books
         DataSnapshot userBooksSnapshot = dataSnapshot.child(Children.USER_BOOKS).child(userID);
 
+        //if user books is not null, it shows books
         if (userBooksSnapshot.getValue() != null) {
             for (DataSnapshot newUserBook : userBooksSnapshot.getChildren()) {
+                //gets mapped user book
                 UserBook userBook = bookService.getUserBook(newUserBook);
+                //gets mapped book
                 Book book = bookService.getBook(bookSnapshot.child(userBook.getBookId()));
 
+                //gets status
                 Status statusToAdd = bookService.getStatus(userBook, book.getAmount());
                 Integer coverId = coverService.getCover(book.getId());
 
@@ -129,6 +134,7 @@ public class UserBooksActivity extends AppCompatActivity {
                 covers.add(coverId);
             }
 
+            //lists are converted to primitive arrays to pass it to CustomAdapter constructor
             String[] title = new String[titles.size()];
             String[] author = new String[authors.size()];
             Status[] status = new Status[statuses.size()];
@@ -141,19 +147,20 @@ public class UserBooksActivity extends AppCompatActivity {
             CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), title, author, status, flags);
             final Context context = this;
 
-            simpleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    BookViewModel bookToShow = bookList.get(position);
+            //sets onClickListener to view specific book
+            simpleList.setOnItemClickListener(
+                    (parent, view, position, id) -> {
+                        BookViewModel bookToShow = bookList.get(position);
 
-                    Intent intent = new Intent();
-                    intent.setClass(context, UserBookPageActivity.class);
-                    intent.putExtra("Book", bookToShow);
+                        //book is added to intent extras
+                        Intent intent = new Intent();
+                        intent.setClass(context, UserBookPageActivity.class);
+                        intent.putExtra("Book", bookToShow);
 
-                    startActivity(intent);
-                }
-            });
+                        startActivity(intent);
+                    });
 
+            //sets adapter to the list
             simpleList.setAdapter(customAdapter);
         }
     }
@@ -162,15 +169,11 @@ public class UserBooksActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 }
 

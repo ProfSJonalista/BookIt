@@ -9,18 +9,20 @@ import main.bookit.model.Category;
 import main.bookit.model.UserBook;
 
 public class BookService {
-    public boolean matchSearch(DataSnapshot bookS, String searchBy, String searchFor) {
+
+    //checks if current book matches the search requirements
+    public boolean matchSearch(DataSnapshot bookToCheck, String searchBy, String searchFor) {
         switch (searchBy) {
             case "Author name":
-                String author = bookS.getValue(Book.class).getAuthor();
+                String author = bookToCheck.getValue(Book.class).getAuthor();
                 return author.toLowerCase().contains(searchFor.toLowerCase());
 
             case "Book name":
-                String title = bookS.getValue(Book.class).getTitle();
+                String title = bookToCheck.getValue(Book.class).getTitle();
                 return title.toLowerCase().contains(searchFor.toLowerCase());
 
             case "Category":
-                Category category = bookS.getValue(Book.class).getCategory();
+                Category category = bookToCheck.getValue(Book.class).getCategory();
                 return category.toString().toLowerCase().contains(searchFor.toLowerCase());
 
             default:
@@ -28,6 +30,7 @@ public class BookService {
         }
     }
 
+    //gets status of the book
     public Status getStatus(UserBook userBook, Integer amount) {
 
         if (userBook == null) {
@@ -40,10 +43,9 @@ public class BookService {
             boolean isBooked = userBook.getBooked();
 
             if (isBooked) {
-                //TODO jeśli jest po aktualnej dacie - odrezerwować
                 Date bookDate = userBook.getBookDate();
                 CalendarService calendarService = new CalendarService();
-                if(bookDate != null && calendarService.checkIfReservationDateHasPassed(bookDate)){
+                if (bookDate != null && calendarService.checkIfReservationDateHasPassed(bookDate)) {
                     return Status.AVAILABLE;
                 }
 
@@ -53,7 +55,6 @@ public class BookService {
             Date returnDate = userBook.getReturnDate();
 
             if (returnDate != null || !returnDate.equals("")) {
-                //TODO jeśli jest po dacie zwrotu, zwiększyść ilość książki o 1 i usunąć z książek użytkownika
                 return Status.OWNED;
             }
         }
@@ -61,16 +62,18 @@ public class BookService {
         return Status.AVAILABLE;
     }
 
+    //returns
     public UserBook getUserBook(DataSnapshot userBookSnapshot, String bookID) {
         DataSnapshot userBook = userBookSnapshot.child(bookID);
 
-        if(userBook.getValue() == null)
+        if (userBook.getValue() == null)
             return null;
 
         return getUserBook(userBook);
     }
 
-    public UserBook getUserBook(DataSnapshot newUserBook){
+    //maps DataSnapshot to UserBook
+    public UserBook getUserBook(DataSnapshot newUserBook) {
         return new UserBook(
                 newUserBook.getValue(UserBook.class).getUserId(),
                 newUserBook.getValue(UserBook.class).getBookId(),
@@ -83,6 +86,7 @@ public class BookService {
         );
     }
 
+    //maps DataSnapshot to Book
     public Book getBook(DataSnapshot newBook) {
         return new Book(
                 newBook.getValue(Book.class).getId(),
