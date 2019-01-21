@@ -6,6 +6,7 @@ import main.bookit.R;
 
 public class CoverService {
     private HashMap<String, Integer> covers;
+
     public CoverService(){
         covers = new HashMap<>();
         covers.put("yW5hQpeif0i9rhenE6dc69", R.drawable.cb_the_stand_stephen_king);
@@ -19,6 +20,7 @@ public class CoverService {
         covers.put("85rrGvXHafx5pc49VL9Fvca", R.drawable.cb_the_elephant_vanishes_haruki_murakami);
     }
 
+    //temporary workaround of getting cover
     public int getCover(String bookId){
         return covers.get(bookId);
     }

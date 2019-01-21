@@ -14,6 +14,7 @@ import main.bookit.ui.UserBooksActivity;
 
 public class ToolbarService {
 
+    //returns user books button
     public ImageView getUserBooksImageButton(final Activity activity) {
         ImageView image = activity.findViewById(R.id.userBooks);
         image.setOnClickListener(v ->
@@ -22,6 +23,7 @@ public class ToolbarService {
         return image;
     }
 
+    //returns settings button
     public ImageView getSettingsImageButton(final Activity activity) {
         ImageView image = activity.findViewById(R.id.settingsIcon);
         image.setOnClickListener(v ->
@@ -30,6 +32,7 @@ public class ToolbarService {
         return image;
     }
 
+    //returns search button
     public ImageView getSearchImageButton(final Activity activity) {
         ImageView image = activity.findViewById(R.id.searchIcon);
         image.setOnClickListener(v ->
@@ -38,6 +41,7 @@ public class ToolbarService {
         return image;
     }
 
+    //returns home button
     public ImageView getHomeButton(final Activity activity) {
         ImageView image = activity.findViewById(R.id.homeIcon);
         image.setOnClickListener(v ->

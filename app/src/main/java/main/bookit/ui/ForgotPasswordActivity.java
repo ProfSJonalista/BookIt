@@ -50,27 +50,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private void setItems() {
         editText = (EditText) findViewById(R.id.emailBox);
         confirmButton = (Button) findViewById(R.id.button_confirm);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String email = editText.getText().toString();
 
-                if((email != null || email != "") && email.contains("@")) {
-                    mAuth.sendPasswordResetEmail(email)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+        //sets on click listener to send email
+        confirmButton.setOnClickListener(
+                v -> {
+                    final String email = editText.getText().toString();
+
+                    //if email contains @, email is sent to the given address
+                    if (email.contains("@")) {
+                        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(
+                                task -> {
                                     if (task.isSuccessful()) {
-                                        Log.d(TAG, "Email sent.");
+                                        Log.d(TAG, getString(R.string.email_sent) + email);
                                         toastMessage(getString(R.string.email_sent) + email);
                                     }
-                                }
-                            });
-                } else{
-                    toastMessage(getString(R.string.wrong_email));
-                }
-            }
-        });
+                                });
+                        //else toast is shown about wrong email
+                    } else {
+                        toastMessage(getString(R.string.wrong_email));
+                    }
+                });
     }
 
     private void toastMessage(String message) {

@@ -62,7 +62,7 @@ public class SettingsFragment extends Fragment {
         Paper.init(this.getActivity());
 
         final String language = Paper.book().read("language");
-        if(language == null){
+        if (language == null) {
             Paper.book().write("language", "en");
         }
 
@@ -75,20 +75,20 @@ public class SettingsFragment extends Fragment {
 
         languageChooseText = (TextView) view.findViewById(R.id.languageChooseId);
         languageSpinner = (Spinner) view.findViewById(R.id.languageSpinner);
-        String[] values = { "English", "Polski"};
+        String[] values = {"English", "Polski"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+
         languageSpinner.setAdapter(adapter);
         languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                if(position == 0){
+                if (position == 0) {
                     Paper.book().write("language", "en");
-                    updateView((String)Paper.book().read("language"));
-                }
-                else if(position == 1){
+                    updateView((String) Paper.book().read("language"));
+                } else if (position == 1) {
                     Paper.book().write("language", "pl");
-                    updateView((String)Paper.book().read("language"));
+                    updateView((String) Paper.book().read("language"));
                 }
             }
 
@@ -107,7 +107,9 @@ public class SettingsFragment extends Fragment {
             String newPassword = newPasswordText.getText().toString();
             String confirmPassword = confirmPasswordText.getText().toString();
             String currentPass = currentPasswordText.getText().toString();
-            if(!newPassword.equals("") && !confirmPassword.equals("") && !currentPass.equals("")) {
+
+            //if password does not equals to empty string, the password is changed
+            if (!newPassword.equals("") && !confirmPassword.equals("") && !currentPass.equals("")) {
                 if (newPassword.equals(confirmPassword)) {
 
                     mAuth.signInWithEmailAndPassword(user.getEmail(), currentPass);
@@ -132,6 +134,7 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        //logs out the user and starts StartActivity
         logoutButton = view.findViewById(R.id.logout);
         logoutButton.setOnClickListener(v -> {
             mAuth.signOut();
@@ -146,16 +149,16 @@ public class SettingsFragment extends Fragment {
         setToolbarActions();
     }
 
+    //updates view
     private void updateView(String language) {
         Context context = LocaleHelper.setLocale(this.getActivity(), language);
 
         Resources resources = context.getResources();
 
-        //ZMIENIAMY JĘZYK TUTAJ
-        //TODO - sprawdzić czy na pozostałych też się zmienia
         languageChooseText.setText(resources.getString(R.string.language_change));
     }
 
+    //sets toolbar actions
     private void setToolbarActions() {
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this.getActivity());

@@ -15,6 +15,7 @@ public class BookPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_page);
         setToolbar();
 
+        //activates fragment
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, ViewBookFragment.newInstance())

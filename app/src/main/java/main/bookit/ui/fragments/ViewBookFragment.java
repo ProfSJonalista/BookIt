@@ -75,53 +75,58 @@ public class ViewBookFragment extends Fragment {
         setToolbarActions();
         calendarService = new CalendarService();
 
+        //gets book view model from intent extras
         BookViewModel bookVM = (BookViewModel) this.getActivity().getIntent().getSerializableExtra("Book");
         Status bookStatus = bookVM.getStatus();
         final Book book = bookVM.getBook();
 
-        titleTextView.setText(book.getTitle());
-        authorTextView.setText(book.getAuthor());
-        genreTextView.setText(book.getCategory().toString());
-        descriptionContentTextView.setText(book.getDescription());
-        coverImageView.setImageResource(bookVM.getCoverId());
-
         final UserBook userBook = bookVM.getUserBook();
+
         if (userBook != null) {
-            if(bookStatus.equals(Status.RESERVED)){
+            //if user book is not null and book status is RESERVED, button text is set to show expiration date
+            //else book is owned and shows the date to return the book
+            if (bookStatus.equals(Status.RESERVED)) {
                 setButton(getString(R.string.book_reservation_expires), userBook.getBookExpirationDate());
             } else {
                 setButton(getString(R.string.book_return), userBook.getReturnDate());
             }
-        } else if (book.getAmount() > 0 && !(bookStatus.equals(Status.RESERVED) || bookStatus.equals(Status.OWNED))) {
-            bookReservationButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String userID = mAuth.getCurrentUser().getUid();
+            //else if book amount is more than 0 and book status is not reserved or owned
+            //and sets on click listener to reserve book
+        } else if (book.getAmount() > 0 && (!(bookStatus.equals(Status.RESERVED) || bookStatus.equals(Status.OWNED)))) {
+            bookReservationButton.setOnClickListener(v -> {
+                String userID = mAuth.getCurrentUser().getUid();
 
-                    UserBook userBookToAdd = new UserBook(
-                            userID,
-                            book.getId(),
-                            null,
-                            null,
-                            calendarService.getCurrentDate(),
-                            calendarService.getExpirationDate(3),
-                            true,
-                            false);
+                UserBook userBookToAdd = new UserBook(
+                        userID,
+                        book.getId(),
+                        null,
+                        null,
+                        calendarService.getCurrentDate(),
+                        calendarService.getExpirationDate(3),
+                        true,
+                        false);
 
-                    myRef.child(Children.USER_BOOKS).child(userBookToAdd.getUserId()).child(userBookToAdd.getBookId()).setValue(userBookToAdd);
+                //adds book to user books
+                myRef.child(Children.USER_BOOKS).child(userBookToAdd.getUserId()).child(userBookToAdd.getBookId()).setValue(userBookToAdd);
 
-                    book.setAmount(book.getAmount() - 1);
-                    myRef.child(Children.BOOKS).child(book.getId()).setValue(book);
+                //decreases book amount
+                book.setAmount(book.getAmount() - 1);
 
-                    setButton(getString(R.string.book_reservation_expires), userBookToAdd.getBookExpirationDate());
-                    //TODO - w layout zmieniać visibility buttonów
-                }
+                //updates book amount
+                myRef.child(Children.BOOKS).child(book.getId()).setValue(book);
+
+                setButton(getString(R.string.book_reservation_expires), userBookToAdd.getBookExpirationDate());
+                //TODO - w layout zmieniać visibility buttonów
+                //removes on click listener
+                bookReservationButton.setOnClickListener(null);
             });
+
         } else {
             bookReservationButton.setText(getString(R.string.book_unavailable));
         }
     }
 
+    //sets toolbar
     private void setToolbarActions() {
         ToolbarService toolbarService = new ToolbarService();
         userBooksImage = toolbarService.getUserBooksImageButton(this.getActivity());
@@ -129,6 +134,7 @@ public class ViewBookFragment extends Fragment {
         searchImage = toolbarService.getSearchImageButton(this.getActivity());
     }
 
+    //sets text on the button
     private void setButton(String message, Date bookExpirationDate) {
         String text = message + " " + calendarService.getDateAsString(bookExpirationDate);
         bookReservationButton.setText(text);
@@ -167,6 +173,7 @@ public class ViewBookFragment extends Fragment {
         });
     }
 
+    //sets items on the view
     private void setItems(View view) {
         titleTextView = view.findViewById(R.id.bookTitle);
         authorTextView = view.findViewById(R.id.author);
